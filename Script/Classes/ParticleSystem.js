@@ -2,7 +2,7 @@ function ParticleSystem(scene, size) {
 	if (scene === undefined)
 		throw "Missing parameter: Scene Object";
 	this.scene = scene;
-	this.colors = [0xEEEEEE, 0x454545, 0x000099, 0x6B8AC9, 0xB1A627, 0x41AE38];
+	this.colors = [0xDDDDDD, 0x757575, 0x3333ff, 0x6B8AC9, 0xB1A627, 0x41AE38];
 	this.size = size;
 }
 
