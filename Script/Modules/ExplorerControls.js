@@ -1,8 +1,16 @@
 const ExplorerControls = (function() {
 	let pointerLock, yawObject, pitchObject;
 	let enabled = false;
-	let position = {x:0, y:32, z:0};
-	let rotation = {yaw:0, pitch:0};
+	let position;
+	let rotation = {yaw: 0, pitch: 0};
+	Object.defineProperty(rotation, "yaw", {
+		get: () => ((yawObject)? yawObject.rotation.y : 0),
+		set: (value) => ((yawObject) && (yawObject.rotation.y = value))
+	});
+	Object.defineProperty(rotation, "pitch", {
+		get: () => ((pitchObject)? pitchObject.rotation.x : 0),
+		set: (value) => ((pitchObject) && (pitchObject.rotation.x = value))
+	});
 
 	function loadPosition() {
 		if (typeof getCookie === "function") {
@@ -143,6 +151,7 @@ const ExplorerControls = (function() {
 			pointerLock = new THREE.PointerLockControls(camera);
 			yawObject = pointerLock.getObject();
 			pitchObject = yawObject.children[0];
+			position = yawObject.position;
 			scene.add(yawObject);
 			loadPosition();
 			this.direction = new THREE.Vector3(0,0,0);
