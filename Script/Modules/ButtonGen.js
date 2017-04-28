@@ -36,16 +36,20 @@ const ButtonGen = {
 			value: "World Size +",
 			onclick: function() {
 				if (typeof worldSize === "number") {
-					worldSize = worldSize * 1.25;
-					(application.interactor.buttons[0]) && (application.interactor.buttons[0].updateValue());
+					if (worldSize < 256)
+						worldSize = worldSize * 1.25;
+					if (worldSize > 64)
+						(application.interactor.buttons[0]) && (application.interactor.buttons[0].updateValue());
 				}
 			}
 		}, {
 			value: "World Size -",
 			onclick: function() {
 				if (typeof worldSize === "number") {
-					worldSize = worldSize / 1.25;
-					(application.interactor.buttons[0]) && (application.interactor.buttons[0].updateValue());
+					if (worldSize >= 1.25)
+						worldSize = worldSize / 1.25;
+					if (worldSize > 64)
+						(application.interactor.buttons[0]) && (application.interactor.buttons[0].updateValue());
 				}
 			}
 		}, {
