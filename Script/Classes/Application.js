@@ -5,7 +5,7 @@
 * @author: Guilherme Rossato
 */
 
-var worldSize = 32;
+var worldSize = 20;
 var worldFrequency = 0.05;
 var WorldGen, scene, player;
 
@@ -21,11 +21,10 @@ function Application() {
 	this.logger = new Logger(125);
 	ButtonGen.generate(this);
 
-	this.controller = ExplorerControls;
+	this.controller = new ExplorerControl(ThreejsHandler.scene, ThreejsHandler.camera);
 	this.controller.addCallback("lock", () => (this.main.style.display = "none"));
 	this.controller.addCallback("release", () => (this.main.style.display = "flex"));
-	this.controller.init(ThreejsHandler.scene, ThreejsHandler.camera);
-
+	player = this.controller;
 	function onMessageClick() {
 		if (!this.controller.isEnabled()) {
 			this.controller.lock();
@@ -98,12 +97,10 @@ Application.prototype = {
 		var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
 		cube.rotation.y = Math.PI * 45 / 180;
-
 		scene.add(cube);
 	},
 	setup: function() {
 		scene = ThreejsHandler.scene;
-		player = this.controller.getYawObject();
 		this.world.init();
 		this.setupWorld();
 		this.world.addMeshes();
