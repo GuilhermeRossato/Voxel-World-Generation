@@ -20,7 +20,7 @@ function ExplorerControl(scene, camera) {
 		get: () => rotation,
 		set: (value) => false
 	});
-	
+
 	function loadPosition() {
 		if (typeof getCookie === "function") {
 			let cookieValue;
@@ -54,6 +54,14 @@ function ExplorerControl(scene, camera) {
 
 	let callbacks = {};
 
+	function forEachPropertyInObject(object, f) {
+		for (var property in object) {
+			if (object.hasOwnProperty(property)) {
+				f(property, object[property]);
+			}
+		}
+	}
+
 	function pointerLockChange(ev) {
 		if (document.pointerLockElement === document.body) {
 			yawObject.rotation.y = rotation.yaw;
@@ -62,6 +70,7 @@ function ExplorerControl(scene, camera) {
 			pointerLock.enabled = true;
 			callbacks.lock && callbacks.lock();
 		} else {
+			forEachPropertyInObject(keys, (property) => (keys[property] = false));
 			pointerLock.enabled = false;
 			enabled = false;
 			rotation.yaw = yawObject.rotation.y;
