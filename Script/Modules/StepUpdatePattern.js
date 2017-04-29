@@ -6,6 +6,10 @@
 *
 */
 
+/*
+ * Edited to create a instance of Performancer
+*/
+
 const StepUpdatePattern = (function() {
 
 	function loadDefaultConfigurations(config) {
@@ -29,7 +33,14 @@ const StepUpdatePattern = (function() {
 		if (!update)
 			return ()=>{}
 
-		let lastUpdt, lastScnd, tS, difference, leftOver, fpsCount, internalUpdate, that;
+		let lastUpdt, lastScnd, tS, difference, leftOver, fpsCount, internalUpdate, that, performancer;
+
+		performancer = new Performancer({
+			compact: (getCookie("is_compact") !== "0"),
+			onCompactChange: function(compact) {
+				setCookie("is_compact", compact?"1":"0", 30);
+			}
+		});
 
 		lastScnd = lastUpdt = performance.now();
 		fpsCount = leftOver = 0;
@@ -40,7 +51,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 1;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt;
+				performancer.update(difference = tS - lastUpdt);
 				lastUpdt = tS;
 				if (tS - lastScnd >= 1000) {
 					lastScnd += 1000;
@@ -56,7 +67,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 2;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt;
+				performancer.update(difference = tS - lastUpdt);
 				lastUpdt = tS;
 				update(tS);
 				draw();
@@ -66,7 +77,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 3;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt;
+				performancer.update(difference = tS - lastUpdt);
 				lastUpdt = tS;
 				if (tS - lastScnd >= 1000) {
 					lastScnd += 1000;
@@ -87,7 +98,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 5;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -114,7 +125,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 6;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= 160) {
 					while (difference >= 16) {
@@ -140,7 +151,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 7;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -165,7 +176,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 8;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -191,7 +202,7 @@ const StepUpdatePattern = (function() {
 			// The most commonly used configuration
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= 160) {
 					while (difference >= 16) {
@@ -218,7 +229,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 10;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -243,7 +254,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 11;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -267,7 +278,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 12;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -291,7 +302,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 13;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -315,7 +326,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 14;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep) {
 					while (difference >= timeStep) {
@@ -335,7 +346,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 15;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -354,7 +365,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 16;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -373,7 +384,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 17;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= 160) {
 					while (difference >= 16) {
@@ -392,7 +403,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 18;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -411,7 +422,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 19;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -429,7 +440,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 20;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {
@@ -447,7 +458,7 @@ const StepUpdatePattern = (function() {
 			this.mode = 21;
 			internalUpdate = function() {
 				tS = performance.now();
-				difference = tS - lastUpdt + leftOver;
+				performancer.update(difference = tS - lastUpdt + leftOver);
 				lastUpdt = tS;
 				if (difference <= timeStep*10) {
 					while (difference >= timeStep) {

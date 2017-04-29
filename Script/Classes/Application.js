@@ -18,7 +18,7 @@ function Application() {
 	this.world = new ParticleSystem(ThreejsHandler.scene, 0.5);
 	this.main = document.getElementById("main");
 
-	this.logger = new Logger(125);
+	this.logger = new Logger(81);
 	ButtonGen.generate(this);
 
 	this.controller = new ExplorerControl(ThreejsHandler.scene, ThreejsHandler.camera);
@@ -32,7 +32,6 @@ function Application() {
 	}
 
 	function onCanvasClick() {
-		
 	}
 
 	this.main.addEventListener("click", ()=>onMessageClick.call(this), false);
