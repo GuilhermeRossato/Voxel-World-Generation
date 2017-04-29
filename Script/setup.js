@@ -5,7 +5,7 @@ function getWorker() {
 		var w = new Worker("Script/WorldGeneration/WorldWorker1.js")
 		return w;
 	} catch(e) {
-		return FakeWorldGenerator;
+		return FakeWorldGen;
 	}
 }
 
@@ -13,8 +13,8 @@ window.addEventListener("load", () => {
 	app = new Application();
 	worker = getWorker();
 	worker.onmessage = function(message) {
-		if (message.data[0] === "c") {
-			console.log(message.data.substr(1));
+		if (message === "c") {
+			console.log(message.substr(1));
 		}
 	}
 	worker.postMessage("c0,0,0");
