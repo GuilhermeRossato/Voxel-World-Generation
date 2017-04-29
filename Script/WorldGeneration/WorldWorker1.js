@@ -19,7 +19,7 @@ function handleMessage(message) {
 	} else if (message.data[0] === "c") {
 		values = interpretXYZ(message.data, 10);
 		var world = generate(values.x, values.y, values.z);
-		postMessage(message.data+","+world.toString());
+		postMessage(message.data+","+world.encode());
 	}
 }
 

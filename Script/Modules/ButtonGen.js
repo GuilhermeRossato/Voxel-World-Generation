@@ -21,9 +21,11 @@ const ButtonGen = {
 			disabled: true,
 			init: function() {
 				let cookieValue = getCookie("vwg_worldSize");
-				if (typeof cookieValue === "string" && cookieValue.length > 1 && (!(isNaN(parseInt(cookieValue))))) {
+				if (typeof cookieValue === "string" && cookieValue.length > 0 && (!(isNaN(parseInt(cookieValue))))) {
 					worldSize = parseInt(cookieValue);
 				}
+				if (worldSize > 50)
+					worldSize = 16;
 				this.value = `World Size: ${worldSize|0}`;
 			},
 			updateValue: function() {

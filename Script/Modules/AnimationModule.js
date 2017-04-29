@@ -1,3 +1,5 @@
+var interp = [];
+
 const AnimationModule = (function() {
 
 	let animationSize = 156;
@@ -8,44 +10,39 @@ const AnimationModule = (function() {
 	let updateCallback;
 	let count = 0;
 	let redirectUpdate, redirectBusy;
+	let startPos;
 
 	function easeInterpolation(x) {
-		return x;
+		return FastInterpolation.any(0,0,0.1,0.01,0.9,0.99,1,1,x);
 	}
 
 	function getInterpolationFor(parameter) {
-		if (points.length === 2)
-			return interpolation.add(0, points[0][parameter]).add(animationSize, points[1][parameter]);
-		else if (points.length === 3)
-			return interpolation.add(0, points[0][parameter]).add(animationSize*easeInterpolation(1/2), points[1][parameter]).add(animationSize, points[2][parameter]);
-		else if (points.length === 4)
-			return interpolation.add(0, points[0][parameter]).add(animationSize*easeInterpolation(1/3), points[1][parameter]).add(animationSize*easeInterpolation(2/3), points[2][parameter]).add(animationSize, points[3][parameter]);
-		else if (points.length === 5)
-			return interpolation.add(0, points[0][parameter]).add(animationSize*easeInterpolation(1/4), points[1][parameter]).add(animationSize*easeInterpolation(2/4), points[2][parameter]).add(animationSize*easeInterpolation(3/4), points[3][parameter]).add(animationSize, points[4][parameter]);
-		else if (points.length === 6)
-			return interpolation.add(0, points[0][parameter]).add(animationSize*easeInterpolation(1/5), points[1][parameter]).add(animationSize*easeInterpolation(2/5), points[2][parameter]).add(animationSize*easeInterpolation(3/5), points[3][parameter]).add(animationSize*easeInterpolation(4/5), points[4][parameter]).add(animationSize, points[5][parameter]);
-		else
-			return {at:i=>i};
+		let n = [];
+		for (let i = 0 ; i < points.length; i++) {
+			n.push(i/(points.length-1), points[i][parameter]);
+		}
+		return FastInterpolation.any(...n);
 	}
 
 	function update() {
 		if (count === animationSize)
 			console.log("Warning: Last frame");
 		["x", "y", "z"].forEach((parameter,i) => {
-			player.position[parameter] = getInterpolationFor(parameter).at(count);
+			player.position[parameter] = interp[i].at(easeInterpolation(count/animationSize));
 		});
 		["yaw", "pitch"].forEach((parameter,i) => {
-			player.rotation[parameter] = getInterpolationFor(parameter).at(count);
+			player.rotation[parameter] = interp[i+3].at(easeInterpolation(count/animationSize));
 		});
-		console.log(player.position.x, player.position.y, player.position.z, player.rotation.yaw, player.rotation.pitch);
+		//console.log(player.position.x, player.position.y, player.position.z, player.rotation.yaw, player.rotation.pitch);
 		count++;
 	}
 	function startAnimation() {
-		startPos = {x: player.position.x, y: player.position.y, z: player.position.z};
-		console.log("Animation started");
-		trackFunctions = [];
+		startPos = {x: player.position.x, y: player.position.y, z: player.position.z, yaw: player.rotation.yaw, pitch:player.rotation.pitch};
+		console.log("Animation started with "+points.length+" points");
+		interp.length = 0;
+		count = 0;
 		["x", "y", "z", "yaw", "pitch"].forEach(parameter => {
-			trackFunctions.push(getInterpolationFor(parameter));
+			interp.push(getInterpolationFor(parameter));
 		});
 		update();
 		state = "playing";
@@ -61,6 +58,13 @@ const AnimationModule = (function() {
 			setTimeout(()=>(app.main.style.display = "none"), 200);
 		}
 	}
+
+	function addPoint(x, y, z, yaw = 0, pitch = 0) {
+		let pointInfo = {x: x, y: y, z: z, yaw: yaw, pitch:pitch};
+		points.push(pointInfo);
+		return pointInfo;
+	}
+
 	var keys = {
 		"add": "KeyE",
 		"remove": "KeyR",
@@ -72,12 +76,14 @@ const AnimationModule = (function() {
 
 	function onKeyDown(ev) {
 		if (ev.code === keys.add && player && state === "saving") {
-			if (points.length >= 6) {
+			if (points.length >= 4) {
 				console.log("Cannot add points: Too many points already exists");
 			} else {
-				let pointInfo = {x: player.position.x, y: player.position.y, z: player.position.z, yaw: player.rotation.yaw, pitch:player.rotation.pitch};
-				points.push(pointInfo);
-				console.log(`Added point ${pointInfo.x}, ${pointInfo.y}, ${pointInfo.z} - Looking at ${pointInfo.yaw}, ${pointInfo.pitch}`);
+				let pointInfo = addPoint(player.position.x, player.position.y, player.position.z, player.rotation.yaw, player.rotation.pitch);
+				if (pointInfo instanceof Error)
+					console.log(pointInfo);
+				else
+					console.log(`Added point ${pointInfo.x}, ${pointInfo.y}, ${pointInfo.z} - Looking at ${pointInfo.yaw}, ${pointInfo.pitch}`);
 			}
 		} else if (ev.code === keys.remove && player && state === "saving") {
 			if (points.length > 0) {
@@ -96,15 +102,10 @@ const AnimationModule = (function() {
 				startAnimation();
 			}
 		} else if (ev.code === keys.step && state === "playing") {
-			console.log("Updating");
 			update();
 		} else if (ev.code === keys.stop && state === "playing") {
 			stop();
 		}
-	}
-
-	function stop() {
-
 	}
 
 	function validatePlayer(pl) {
@@ -126,10 +127,16 @@ const AnimationModule = (function() {
 			app.controller.isEnabled = redirectBusy;
 			app.main.style.display = "flex";
 		}
+		if (startPos) {
+			player.position.set(startPos.z, startPos.y, startPos.z);
+			player.rotation.yaw = startPos.yaw;
+			player.rotation.pitch = startPos.pitch;
+		}
 	}
 
 	return {
 		points: points,
+		getInterpolationFor: getInterpolationFor,
 		getCount: function() {
 			return count
 		},
@@ -156,6 +163,19 @@ const AnimationModule = (function() {
 			else
 				console.warn("Not currently playing");
 		},
+		addPoint: function(x, y, z, yaw = 0, pitch = 0) {
+			if (typeof x === "object")
+				if (typeof x.position === "object")
+					return addPoint(x.position.x, x.position.y, x.position.z, x.rotation.yaw, x.rotation.pitch);
+				else if (typeof x.x === "number")
+					return addPoint(x.x, x.y, x.z, x.yaw, x.pitch);
+				else
+					return new Error("Unrecognized input");
+			else if (typeof x === "number" && typeof y === "number" && typeof z === "number")
+				return addPoint(x, y, z, yaw, pitch);
+			else
+				return new Error("Unrecognized input");
+		},
 		dispose: function() {
 			window.removeEventListener("keydown", onKeyDown);
 			points = undefined;
@@ -169,3 +189,6 @@ const AnimationModule = (function() {
 	}
 }());
 
+setTimeout(()=>{
+	AnimationModule.init(player);
+}, 1000)
