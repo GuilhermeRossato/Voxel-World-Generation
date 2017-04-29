@@ -38,8 +38,7 @@ const ButtonGen = {
 				if (typeof worldSize === "number") {
 					if (worldSize < 256)
 						worldSize = worldSize * 1.25;
-					if (worldSize > 64)
-						(application.interactor.buttons[0]) && (application.interactor.buttons[0].updateValue());
+					(application.interactor.buttons[0]) && (application.interactor.buttons[0].updateValue());
 				}
 			}
 		}, {
@@ -48,8 +47,7 @@ const ButtonGen = {
 				if (typeof worldSize === "number") {
 					if (worldSize >= 1.25)
 						worldSize = worldSize / 1.25;
-					if (worldSize > 64)
-						(application.interactor.buttons[0]) && (application.interactor.buttons[0].updateValue());
+					(application.interactor.buttons[0]) && (application.interactor.buttons[0].updateValue());
 				}
 			}
 		}, {
