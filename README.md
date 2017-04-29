@@ -6,7 +6,7 @@ Testing different world generation methods using voxels in the web. Implemented 
 
 # Releases
  - v 0.1 [Single Threaded, Simplex Noise, Static World Creation]
-![Preview v0.1](https://github.com/GuilhermeRossato/VoxelWorldGeneration/blob/master/Images/Releases/preview_v01.gif?raw=true)
+![Preview v0.1](https://github.com/GuilhermeRossato/VoxelWorldGeneration/blob/master/Images/preview_v01.gif?raw=true)
 
 # How to run / build locally
 
