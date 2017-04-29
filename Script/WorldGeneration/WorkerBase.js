@@ -9,7 +9,7 @@ var blockTypes = {
 	flower: 7
 }
 
-const chunkSize = 4;
+const chunkSize = 8;
 
 function baseWorldGen(x, y, z) {
 	var w = new WorldDataArray(chunkSize, chunkSize, chunkSize);
@@ -24,7 +24,7 @@ function baseWorldGen(x, y, z) {
 	return w;
 }
 
-function interpretXYZ(text, base) {
+function interpretXYZ(text) {
 	let commaIndex = 0,	nextComma = text.indexOf(','), values = {};
 	values.x = parseInt(text.substr(commaIndex+1, nextComma-1), 10);
 	commaIndex = nextComma;
@@ -32,6 +32,10 @@ function interpretXYZ(text, base) {
 	values.y = parseInt(text.substr(commaIndex+1, nextComma-1), 10);
 	commaIndex = nextComma;
 	nextComma = text.indexOf(",", nextComma+1);
-	values.z = parseInt(text.substr(commaIndex+1), 10);
+	if (nextComma === -1)
+		nextComma = text.length;
+	else
+		values.start = nextComma;
+	values.z = parseInt(text.substr(commaIndex+1, nextComma-1), 10);
 	return values;
 }
