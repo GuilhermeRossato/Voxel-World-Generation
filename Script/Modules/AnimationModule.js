@@ -188,7 +188,8 @@ const AnimationModule = (function() {
 		}
 	}
 }());
-
+/*
 setTimeout(()=>{
 	AnimationModule.init(player);
 }, 1000)
+*/
