@@ -98,7 +98,7 @@ function ExplorerControl(scene, camera) {
 	function onKeyUp(ev) {
 		if (ev.code === "ShiftRight") {
 			keys[ev.code] = !keys[ev.code];
-		} else if (ev.code === "KeyR") {
+		} else if (ev.code === "KeyR" && worldSize < 20) {
 			app.setupWorld();
 		} else if (keys[ev.code] === true)
 			keys[ev.code] = false;
@@ -144,9 +144,8 @@ function ExplorerControl(scene, camera) {
 	this.update = function() {
 		if (yawObject && pitchObject) {
 			this.updateDirectionVector();
-			if (direction.x != 0) {
+			if (direction.x != 0)
 				position.x += direction.x * (keys["ShiftRight"]?0.085*4:0.085);
-			}
 			if (direction.y != 0)
 				position.y += direction.y * (keys["ShiftRight"]?0.105*4:0.105);
 			if (direction.z != 0)
@@ -177,7 +176,6 @@ function ExplorerControl(scene, camera) {
 		if (yawObject)
 			direction.applyQuaternion(yawObject.quaternion);
 	}
-	
 	function init(scene, camera) {
 		if (!(scene instanceof THREE.Scene)) throw "Missing parameter: Scene Object";
 		if (!(camera instanceof THREE.Camera)) throw "Missing parameter: Camera Object";

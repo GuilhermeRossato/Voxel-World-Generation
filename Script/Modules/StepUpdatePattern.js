@@ -10,6 +10,8 @@
  * Edited to create a instance of Performancer
 */
 
+var performancer;
+
 const StepUpdatePattern = (function() {
 
 	function loadDefaultConfigurations(config) {
@@ -33,7 +35,7 @@ const StepUpdatePattern = (function() {
 		if (!update)
 			return ()=>{}
 
-		let lastUpdt, lastScnd, tS, difference, leftOver, fpsCount, internalUpdate, that, performancer;
+		let lastUpdt, lastScnd, tS, difference, leftOver, fpsCount, internalUpdate, that;
 
 		performancer = new Performancer({
 			compact: (getCookie("is_compact") !== "0"),
