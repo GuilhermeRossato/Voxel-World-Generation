@@ -2,7 +2,7 @@
 
 Testing different world generation methods using voxels in the web. Implemented with HTML5, Javascript and three.js
 
-[Click here to run the current version](https://rawgit.com/GuilhermeRossato/3D-Redstone-Simulator/master/index.html)
+[Click here to run the current version](https://rawgit.com/GuilhermeRossato/VoxelWorldGeneration/master/index.html)
 
 # Releases
  - v 0.1 [Single Threaded, Simplex Noise, Static World Creation]
