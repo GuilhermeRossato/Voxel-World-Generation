@@ -53,7 +53,7 @@ function Performancer(config = {}) {
 		return this;
 	}
 	this.setLeft(config.left, config.zIndex);
-	
+
 	canvas.width = 75;
 	canvas.height = 32;
 	canvas.setAttribute("style", `
@@ -84,19 +84,19 @@ function Performancer(config = {}) {
 	/* Events */
 	let index = -1;
 	let ctx = canvas.getContext("2d");
-	
+
 	let reset = function() {
 		ctx.clearRect(0, 0, 75, 32);
 		index = -1;
 		return this;
 	}
 	this.reset = reset;
-	
+
 	let largeDisplay = config.compact;
 	if (!config.unclickable) {
 		wrapper.onclick = () => {
 			canvas.style.display = (largeDisplay)?"none":"inline";
-			if (largeDisplay)
+			if (!largeDisplay)
 				reset();
 			if (config.onCompactChange)
 				config.onCompactChange(largeDisplay);
@@ -108,7 +108,7 @@ function Performancer(config = {}) {
 		canvas.style.display = (largeDisplay)?"none":"inline";
 		largeDisplay = !largeDisplay;
 	}
-	
+
 	this.update = function(delta) {
 		if (index < 75)
 			index++;
