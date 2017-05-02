@@ -8,6 +8,7 @@
 
 function WorldDataArray(sizeX, sizeY, sizeZ) {
 	let main = new Uint32Array(Math.ceil(sizeX*sizeY*sizeZ/10));
+	let count = 0;
 	function flatten(x, y, z) {
 		return x+sizeX*(z+y*sizeZ);
 		//return x+z*sizeX+y*sizeX*sizeZ;
@@ -49,7 +50,7 @@ function WorldDataArray(sizeX, sizeY, sizeZ) {
 			area = index % 10,
 			mask = getMask(area);
 		//console.log(`index: ${index}, compactId: ${compactId}, area: ${area}, mask:${minL((mask.toString(2)), "0", 8*4, true,4)}`);
-		return (main[compactId] = (main[compactId] & mask) | (value << (area*3+1)+1));
+		return (main[compactId] = (main[compactId] & mask) | (value << (area*3+1)));
 	}
 	this.get = function(x, y, z) {
 		if (x >= 0 && y >= 0 && z >= 0 && x < sizeX && y < sizeY && z < sizeZ) {
@@ -58,9 +59,18 @@ function WorldDataArray(sizeX, sizeY, sizeZ) {
 	}
 	this.set = function(x, y, z, value) {
 		if (x >= 0 && y >= 0 && z >= 0 && value >= 0 && x < sizeX && y < sizeY && z < sizeZ && value < 8) {
+			count ++;
 			return this._set(x, y, z, value);
 		}
 		console.warn("Unnaccepted parameters: ", {x:x, y:y, z:z, value:value, sizeX:sizeX, sizeY:sizeY, sizeZ:sizeZ});
+	}
+	this.getCount = function() {
+		return count;
+	}
+	this.clear = function() {
+		for (let i = 0; i < main.length; i++) {
+			main[i] = 0;
+		}
 	}
 	this.toArray = function() {
 		return new Array(...main);

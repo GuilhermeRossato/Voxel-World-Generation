@@ -14,6 +14,8 @@ const chunkSize = 8;
 function baseWorldGen(x, y, z) {
 	var w = new WorldDataArray(chunkSize, chunkSize, chunkSize);
 	w.set(0,0,0,2);
+	if (w.get(0,0,0)!==2)
+		console.log("error");
 	w.set(0,0,1,1);
 	w.set(0,1,0,1);
 	w.set(1,0,0,1);
@@ -22,6 +24,18 @@ function baseWorldGen(x, y, z) {
 	w.set(1,1,1,5);
 	w.set(2,2,2,6);
 	return w;
+}
+
+function encodeWorldMessage(world) {
+	return ("c"+world.getCount()+","+world.encode());
+}
+
+function decodeWorldMessage(text) {
+	let nextComma, values = {};
+	nextComma = text.indexOf(",");
+	values.count = parseInt(text.substr(1, nextComma-1));
+	values.start = nextComma;
+	return values;
 }
 
 function interpretXYZ(text) {

@@ -10,12 +10,6 @@ function getWorker() {
 }
 
 window.addEventListener("load", () => {
-	app = new Application();
-	worker = getWorker();
-	worker.onmessage = function(message) {
-		if (message === "c") {
-			console.log(message.substr(1));
-		}
-	}
-	worker.postMessage("c0,0,0");
+	app = Application;
+	app.init();
 });

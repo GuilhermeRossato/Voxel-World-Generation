@@ -1,28 +1,29 @@
-function WorldHandler(world, workers) {
-	this.chunks = [];
+function WorldHandler(player, scene) {
 	this.chunkOffsets = [[0,0,0], [0,0,1], [0,0,-1], [1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [1,0,1], [1,0,-1], [-1,0,1], [-1,0,-1], [-1,-1,0], [1,-1,0], [0,-1,-1], [0,-1,1], [-1,1,0], [1,1,0], [0,1,-1], [0,1,1], [1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]];
-	if (workers instanceof Array) {
-		this.workers = workers;
-		this.availableWorkers = workers.length;
-	} else if (workers instanceof Worker) {
-		this.workers = [workers];
-		this.availableWorkers = 1;
-	}
-	let data = new WorldDataArray(chunkSize, chunkSize, chunkSize);
-	function workerMessage(message) {
-		console.log(message);
-		if (message.data[0] === "c") {
-			let data = interpretXYZ(message.data);
-			console.log("data start = ",data.substr(message.start));
-		} else if (message.data[0] === "e") {
-			
-		}
-	}
-	this.workers.forEach(worker => worker.onmessage = workerMessage);
+	this.chunks = [];
+	this.player = player;
+	this.scene = scene;
+	this.workers = [];
+	this.data = new WorldDataArray(chunkSize, chunkSize, chunkSize);
+	this.startWorkers();
 }
 
 WorldHandler.prototype = {
 	constructor: WorldHandler,
+	onChunkFill: function(data, count, cx, cy, cz) {
+		let chunk = new Chunk();
+		chunk.fillFrom(data, cx, cy, cz, count);
+		chunk.finalize(this.scene);
+		this.chunks[cx][cz][cy] = chunk;
+	},
+	startWorkers: function(quantity = 4) {
+		this.workers.forEach(worker => worker.terminate());
+		this.workers.length = 0;
+		for (let i = 0; i < quantity; i++) {
+			let worker = new Worker("Script/WorldGeneration/WorldWorker1.js");
+			new WorkerWrapper(this, worker);
+		}
+	},
 	hasElapsed: function() {
 		if (this.elapsed > 0) {
 			this.elapsed--;
@@ -52,28 +53,35 @@ WorldHandler.prototype = {
 		(!this.chunks[x][z]) && (this.chunks[x][z] = []);
 		this.chunks[x][z][y] = chunk;
 	},
+	assignWorker: function(worker, x, y, z) {
+		let data = new WorldDataArray(chunkSize, chunkSize, chunkSize);
+		worker.assign(data, x, y, z);
+		this.setChunk(x, y, z, data);
+	},
 	changedWorkerCount: function() {
-		if (this.lastWorkerCount === this.workers.length) {
-			return false
-		} else {
+		if (this.lastWorkerCount === this.workers.length)
+			return false;
+		else
 			this.lastWorkerCount = this.workers.length;
-		}
+		return true;
 	},
 	update: function(player) {
-		if (!hasElapsed() || (this.workers.length === 0))
+		if (!this.hasElapsed() || (this.workers.length === 0))
 			return;
-		let x = (player.position.x/chunkSize)|0, y = (player.position.y/chunkSize)|0, z = (player.position.z/chunkSize)|0;
-		if (!didMove(x, y, z) && !changedWorkerCount())
+		let cx = (this.player.position.x/chunkSize)|0, cy = (this.player.position.y/chunkSize)|0, cz = (this.player.position.z/chunkSize)|0;
+		if (!this.didMove(cx, cy, cz) && !this.changedWorkerCount())
 			return;
 		let rx, ry, rz, chunk, worker;
 		for (let i = 0; i < this.chunkOffsets.length; i++) {
-			rx = x + this.chunkOffsets[i][0];
-			ry = y + this.chunkOffsets[i][1];
-			rz = z + this.chunkOffsets[i][2];
+			rx = cx + this.chunkOffsets[i][0];
+			ry = cy + this.chunkOffsets[i][1];
+			rz = cz + this.chunkOffsets[i][2];
 			chunk = this.getChunk(rx, ry, rz);
 			if (!chunk) {
-				this.workers.pop().postMessage(`c${rx},${ry},${rz}`);
-				if (this.workers.length <= 0)
+				let worker = this.workers.pop();
+				this.lastWorkerCount--;
+				this.assignWorker(worker, rx, ry, rz);
+				if (this.workers.length === 0)
 					break;
 			}
 		}
