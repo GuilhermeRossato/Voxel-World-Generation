@@ -1,0 +1,6 @@
+INDEX_FILE="$(exec pwd)/index.html"
+echo $INDEX_FILE
+
+
+
+/opt/google/chrome/google-chrome --disable-web-security --profile-directory="Default" $INDEX_FILE
