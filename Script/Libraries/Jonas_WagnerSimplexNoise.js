@@ -29,6 +29,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
+var SimplexNoiseJ;
+
 (function() {
 'use strict';
 
@@ -39,7 +42,7 @@ var G3 = 1.0 / 6.0;
 var F4 = (Math.sqrt(5.0) - 1.0) / 4.0;
 var G4 = (5.0 - Math.sqrt(5.0)) / 20.0;
 
-function SimplexNoiseJ(random) {
+SimplexNoiseJ = function(random) {
   if (!random) random = Math.random;
   this.p = buildPermutationTable(random);
   this.perm = new Uint8Array(512);
@@ -401,16 +404,4 @@ function buildPermutationTable(random) {
   return p;
 }
 SimplexNoiseJ._buildPermutationTable = buildPermutationTable;
-
-// amd
-if (typeof define !== 'undefined' && define.amd) define(function() {return SimplexNoiseJ;});
-// common js
-if (typeof exports !== 'undefined') exports.SimplexNoiseJ = SimplexNoiseJ;
-// browser
-else if (typeof window !== 'undefined') window.SimplexNoiseJ = SimplexNoiseJ;
-// nodejs
-if (typeof module !== 'undefined') {
-  module.exports = SimplexNoiseJ;
-}
-
 })();
