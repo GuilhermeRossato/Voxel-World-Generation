@@ -1,0 +1,100 @@
+let lastChunkTexture;
+function createChunkTexture() {
+	if (!lastChunkTexture) {
+		let data = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAANUlEQVQ4T2MMDQ39b2RkxEAOOHfuHANje3v7/4qKCnL0M3R0dIwaMBoGo+kAmHuokxcozc4AyIRYJQ0lCBYAAAAASUVORK5CYII="
+			let loader = new THREE.TextureLoader();
+		let texture = loader.load(data);
+		texture.magFilter = THREE.NearestFilter;
+		texture.minFilter = THREE.LinearMipMapLinearFilter;
+		lastChunkTexture = texture;
+		return texture;
+	} else {
+		return lastChunkTexture;
+	}
+}
+
+function createChunkMesh(geometry) {
+	let material = new THREE.PointsMaterial({
+		map: createChunkTexture(),
+		size:1.5,
+		color: new THREE.Color(0x646464)
+	});
+	let mesh = new THREE.Points(geometry, material);
+	return mesh;
+}
+
+function Chunk(x, y, z) {
+	this.geometry = new THREE.Geometry();
+	this.squaredDistanceFrom = function(px, py, pz) {
+		return (px-x)*(px-x)+(py-y)*(py-y)+(pz-z)*(pz-z);
+	}
+	this.getXYZ = function() {
+		return [x,y,z];
+	}
+}
+
+Chunk.prototype = {
+	constructor: Chunk,
+	sidesDisplacement: [
+	[0, 0, -1], [0, 0, 1], [-1, 0, 0], [1, 0, 0],
+	[0, -1, 0], [0, 1, 0], [-1, 1, -1], [-1, 1, 1],
+	[1, 1, -1], [1, 1, 1], [-1, -1, -1], [-1, -1, 1],
+	[1, -1, -1], [1, -1, 1],[1, -1, 0], [-1, -1, 0],
+	[0, -1, 1], [0, -1, -1], [1, 1, 0], [-1, 1, 0],
+	[0, 1, 1], [0, 1, -1], [1, 1, 1], [1, 0, 1], [-1, 0, -1]],
+	fillFrom: function(data, cx, cy, cz, count = 512) {
+		let i = 0,
+			rx = cx*chunkSize,
+			ry = cy*chunkSize,
+			rz = cz*chunkSize,
+			id, adjacentCount, marker;
+		for (let x = 0 ; x < chunkSize; x ++) {
+			for (let y = 0 ; y < chunkSize; y ++) {
+				for (let z = 0 ; z < chunkSize; z ++) {
+					adjacentCount = 0;
+					this.sidesDisplacement.forEach(vec => {
+						if (data.get(x+vec[0], y+vec[1], z+vec[2]) === 1)
+							adjacentCount++;
+					});
+					if (adjacentCount > 0 && adjacentCount < this.sidesDisplacement.length) {
+						id = data.get(x,y,z);
+						if (id !== 0) {
+							/*
+							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz+0.25));
+							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz-0.25));
+							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz+0.25));
+							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz-0.25));
+							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz+0.25));
+							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz-0.25));
+							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz+0.25));
+							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz-0.25));
+							*/
+							this.geometry.vertices.push(new THREE.Vector3(x+rx, y+ry, z+rz));
+							//this.set(x, y, z, id);
+							i++;
+						}
+					}
+				}
+				if (i === count)
+					return true;
+			}
+		}
+		return false;
+	},
+//	set: function(x, y, z, id) {
+//		this.geometry.vertices.push(new THREE.Vector3(x, y, z));
+//	},
+	destroy: function() {
+		this.mesh.parent.remove(this.mesh);
+		this.geometry.vertices = undefined;
+		this.geometry = undefined;
+		this.mesh = undefined;
+		this.squaredDistanceFrom = undefined;
+		return this.getXYZ();
+	},
+	finalize: function(scene) {
+		this.mesh = createChunkMesh(this.geometry);
+		scene.add(this.mesh);
+		this.finalize = undefined;
+	}
+}
