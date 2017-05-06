@@ -71,6 +71,7 @@ const ThreejsHandler = (function() {
 			initScene.call(this);
 			initCamera.call(this, config.width, config.height);
 			this.resize(config.width, config.height);
+			this.render();
 			this.init = undefined;
 			return true;
 		},
