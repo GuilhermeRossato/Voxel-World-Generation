@@ -80,6 +80,8 @@ function ExplorerControl(scene, camera) {
 		}
 	}
 
+	this.savePosition = savePosition;
+
 	const keys = {
 		"KeyW": false,
 		"KeyD": false,
