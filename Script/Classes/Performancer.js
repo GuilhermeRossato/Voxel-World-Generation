@@ -25,7 +25,8 @@ function Performancer(config = {}) {
 	/* Document Elements */
 	let wrapper = document.createElement("div");
 	this.wrapper = wrapper;
-	let span = document.createElement("span");
+	let spanMs = document.createElement("span");
+	let spanFPS = document.createElement("span");
 	let canvas = document.createElement("canvas");
 	/* Styles */
 	this.setLeft = function(left, zIndex) {
@@ -37,7 +38,7 @@ function Performancer(config = {}) {
 				alignment += left.substr(0, left.indexOf(";")+1);
 		else
 			alignment += left+"px;";
-		alignment += " top:18px";
+		alignment += " top:0px";
 		let zIndexString = zIndex?("z-index: "+zIndex+";"):"";
 		wrapper.setAttribute("style", `
 			cursor:pointer;
@@ -46,7 +47,6 @@ function Performancer(config = {}) {
 			margin:0px;
 			padding:0px;
 			width:81px;
-			max-height:50px;
 			background-color:#002200;
 			text-shadow:none;
 		`);
@@ -57,7 +57,7 @@ function Performancer(config = {}) {
 	canvas.width = 75;
 	canvas.height = 32;
 	canvas.setAttribute("style", `
-		display:${config.compact?"inline":"none"};
+		display:${config.compact?"block":"none"};
 		width: ${canvas.width}px;
 		height: ${canvas.height}px;
 		background-color:#003300;
@@ -65,21 +65,33 @@ function Performancer(config = {}) {
 		padding: 0;
 		image-rendering: pixelated;
 	`);
-	span.setAttribute("style", `
-		display: ${(config.noLabel?"none":"inline")};
+	spanFPS.setAttribute("style", `
+		display: ${(config.noLabel?"none":"block")};
 		color: #00FF00;
 		height: 11px;
 		text-align: center;
-		display: block;
+		width: ${canvas.width}px;
+		font-size: 11px;
+		font-family: Verdana, Arial;
+		padding: 0;
+		margin: 0px 3px 3px 3px;
+	`)
+	spanMs.setAttribute("style", `
+		display: ${(config.noLabel?"none":"block")};
+		color: #00FF00;
+		height: 11px;
+		text-align: center;
 		width: ${canvas.width}px;
 		font-size: 11px;
 		font-family: Verdana, Arial;
 		padding: 0;
 		margin: 0px 3px 3px 3px;
 	`);
-	span.innerText = "STARTING";
+	spanMs.innerText = "STARTING";
+	spanFPS.innerText = "STARTING";
 	/* Appends */
-	wrapper.appendChild(span);
+	wrapper.appendChild(spanFPS);
+	wrapper.appendChild(spanMs);
 	wrapper.appendChild(canvas);
 	/* Events */
 	let index = -1;
@@ -95,7 +107,7 @@ function Performancer(config = {}) {
 	let largeDisplay = config.compact;
 	if (!config.unclickable) {
 		wrapper.onclick = () => {
-			canvas.style.display = (largeDisplay)?"none":"inline";
+			canvas.style.display = (largeDisplay)?"none":"block";
 			if (!largeDisplay)
 				reset();
 			if (config.onCompactChange)
@@ -105,8 +117,12 @@ function Performancer(config = {}) {
 		}
 		wrapper.onclick();
 	} else {
-		canvas.style.display = (largeDisplay)?"none":"inline";
+		canvas.style.display = (largeDisplay)?"none":"block";
 		largeDisplay = !largeDisplay;
+	}
+
+	this.updateFPS = function(fps) {
+		spanFPS.innerText = `${fps} FPS`;
 	}
 
 	this.update = function(delta) {
@@ -115,7 +131,7 @@ function Performancer(config = {}) {
 		else
 			index = 0;
 		if (index % 5 === 0)
-			span.innerText = `${delta|0} MS`;
+			spanMs.innerText = `${delta|0} MS`;
 		if (largeDisplay) {
 			delta = (delta/8)|0;
 			if (delta < 9) {

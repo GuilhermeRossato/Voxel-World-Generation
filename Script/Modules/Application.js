@@ -9,10 +9,12 @@ let worldFrequency = 0.05;
 let WorldGen, scene, player;
 
 const Application = (function() {
-	let domElements, logger, world, controller, particleSystem;
+	let domElements, world, controller, particleSystem, menu;
 	return {
 		init: function() {
 			initialize.call(this);
+			this.controller = controller;
+			this.world = world;
 			this.init = undefined;
 		},
 		addTestCube: function(scene) {
@@ -22,10 +24,7 @@ const Application = (function() {
 
 			cube.rotation.y = Math.PI * 45 / 180;
 			scene.add(cube);
-		},
-	}
-	function fpsUpdate(fps) {
-		logger.setText(`FPS: ${fps}`);
+		}
 	}
 	function update() {
 		world.update();
@@ -47,15 +46,22 @@ const Application = (function() {
 		controller.addCallback("release", () => (domElements.main.style.display = "flex"));
 		player = controller;
 
+		menu = new Menu({wrapper: document.body});
+
 		particleSystem = new ParticleSystem(ThreejsHandler.scene, 0.5);
 		try {
 			world = new WorldHandler(controller, ThreejsHandler.scene);
 		} catch (e) {
-			console.log(e);
+			if (e instanceof DOMException) {
+				console.log("Cross origin error, you can either disable security or run a local server.");
+			} else {
+				console.log(e);
+			}
+			if (ThreejsHandler.renderer && ThreejsHandler.renderer.domElement)
+				ThreejsHandler.renderer.domElement.style.display = "none";
 			showText("WebWorkers Error", "This browser doesn't support multithreading");
 			return;
 		}
-		logger = new Logger(81);
 
 		function onMessageClick() {
 			if (!controller.isEnabled()) {
@@ -68,12 +74,9 @@ const Application = (function() {
 
 		particleSystem.init();
 
-		fpsUpdate(60);
-
-		StepUpdatePattern.init({
+		SpecialStepUpdatePattern.init({
 			update: update,
 			draw: draw,
-			fpsUpdate: fpsUpdate,
 			logMode: false,
 			timeStamp: 16
 		});
