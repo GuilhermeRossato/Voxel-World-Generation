@@ -3,12 +3,11 @@ importScripts('WorkerBase.js', '../WorldDataArray.js', '../WorldBase.js', '../..
 var w = new WorldDataArray(chunkSize, chunkSize, chunkSize);
 var prng1 = new Alea(1337);
 var noiseGen = new SimplexNoiseJ(prng1.next);
-let scale = 24;
+let variable = 24, scale = 19, addedHeight = 0;
 
-function pointCheck(rx,ry,rz) {
-	if (ry < 2) {
+function lowCheck(rx, ry, rz) {
+	if (ry < 2)
 		return false;
-	}
 	if (ry < 48) {
 		let noise;
 		if (ry < 20) {
@@ -16,10 +15,17 @@ function pointCheck(rx,ry,rz) {
 			if (noise > ry/10)
 				return true;
 		}
-		noise = noiseGen.noise3D(rx/scale, ry/scale, rz/scale)+1;
+		noise = noiseGen.noise3D(rx/scale, (ry+addedHeight)/scale, rz/scale)+1;
 		let balance = ry/24;
 		if (noise > balance*balance)
 			return true;
+	}
+	return false;
+}
+
+function pointCheck(rx,ry,rz) {
+	if (lowCheck(rx, ry, rz)) {
+		return (!lowCheck(rx+1, ry, rz) || !lowCheck(rx-1, ry, rz) || !lowCheck(rx, ry, rz+1) || !lowCheck(rx, ry, rz-1) || !lowCheck(rx, ry+1, rz) || !lowCheck(rx, ry-1, rz))
 	}
 	return false;
 }
@@ -50,7 +56,9 @@ function handleMessage(message) {
 		postMessage("dead");
 		self.close();
 	} else if (message.data[0] === "d") {
-		scale = parseFloat(message.data.substr(1));
+		let t = parseInt(message.data.substr(1));
+		addedHeight = 200-t;
+		postMessage("ping "+message.data.substr(1));
 	}
 }
 

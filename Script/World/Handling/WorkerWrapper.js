@@ -1,4 +1,4 @@
-function WorkerWrapper(world, worker, a) {
+function WorkerWrapper(world, worker, configNumber) {
 	let state, lastData, self, x, y, z;
 	self = this;
 	worker.onmessage = function(message) {
@@ -29,7 +29,10 @@ function WorkerWrapper(world, worker, a) {
 	}
 	this.assign = assign;
 	setState("pinging");
-	worker.postMessage("p");
+	if (configNumber)
+		worker.postMessage("d"+a);
+	else
+		worker.postMessage("p");
 }
 WorkerWrapper.prototype = {
 	constructor: WorkerWrapper

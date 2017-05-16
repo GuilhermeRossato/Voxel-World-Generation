@@ -9,8 +9,8 @@ var blockTypes = {
 	flower: 7
 }
 
-const chunkSize = 24;
-const maxLoadedChunks = 72;
+const chunkSize = 20;
+const maxLoadedChunks = 60;
 
 function encodeWorldMessage(world) {
 	return ("c"+world.getCount()+","+world.encode());
