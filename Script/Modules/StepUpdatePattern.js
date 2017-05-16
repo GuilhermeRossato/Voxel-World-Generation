@@ -47,12 +47,11 @@ const SpecialStepUpdatePattern = (function() {
 		fpsUpdate = performancer.updateFPS;
 		lastScnd = lastUpdt = performance.now();
 		fpsCount = leftOver = 0;
-
 		internalUpdate = function() {
 			tS = performance.now();
 			performancer.update(difference = tS - lastUpdt + leftOver);
 			lastUpdt = tS;
-			if (difference <= 160) {
+			if (difference <= 260) {
 				while (difference >= 16) {
 					difference -= 16;
 					update();
@@ -60,7 +59,7 @@ const SpecialStepUpdatePattern = (function() {
 				leftOver = difference;
 			} else {
 				leftOver = 0;
-				update(tS);
+				update();
 			}
 			if (tS - lastScnd >= 1000) {
 				lastScnd += 1000;
@@ -68,8 +67,8 @@ const SpecialStepUpdatePattern = (function() {
 				fpsCount = 0;
 			} else
 				fpsCount++;
-			draw();
 			requestAnimationFrame(internalUpdate);
+			draw();
 		}
 		if (logMode)
 			console.log(`There's only one mode for this step update module.`);
