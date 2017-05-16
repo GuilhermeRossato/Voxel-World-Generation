@@ -12,7 +12,7 @@ function ChunkRemover(parent) {
 ChunkRemover.prototype = {
 	constructor: ChunkRemover,
 	chunkOffsets: [[0,0,0], [0,0,1], [0,0,-1], [1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [1,0,1], [1,0,-1], [-1,0,1], [-1,0,-1], [-1,-1,0], [1,-1,0], [0,-1,-1], [0,-1,1], [-1,1,0], [1,1,0], [0,1,-1], [0,1,1], [1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1], [-1,1,1], [-1,1,-1], [-1,-1,1], [-1,-1,-1]],
-	// Only a WorldHandler calls this function
+	// Only the WorldHandler calls this function
 	onChunkAdded: function(chunk) {
 		this.chunkList.push(chunk);
 		this.lastIndex++;
