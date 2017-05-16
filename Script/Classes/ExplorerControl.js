@@ -146,12 +146,13 @@ function ExplorerControl(scene, camera) {
 	this.update = function() {
 		if (yawObject && pitchObject) {
 			this.updateDirectionVector();
+			let multiplier = (keys["ShiftRight"]?4:2);
 			if (direction.x != 0)
-				position.x += direction.x * (keys["ShiftRight"]?0.085*4:0.085);
+				position.x += direction.x * 0.085*multiplier;
 			if (direction.y != 0)
-				position.y += direction.y * (keys["ShiftRight"]?0.105*4:0.105);
+				position.y += direction.y * 0.105*multiplier;
 			if (direction.z != 0)
-				position.z += direction.z * (keys["ShiftRight"]?0.085*4:0.085);
+				position.z += direction.z * 0.085*multiplier;
 		}
 	}
 	this.lock = function() {
