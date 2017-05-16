@@ -16,7 +16,7 @@ function createChunkTexture() {
 function createChunkMesh(geometry) {
 	let material = new THREE.PointsMaterial({
 		map: createChunkTexture(),
-		size:1.5,
+		size:0.75,
 		color: new THREE.Color(0x646464)
 	});
 	let mesh = new THREE.Points(geometry, material);
@@ -59,7 +59,7 @@ Chunk.prototype = {
 					if (adjacentCount > 0 && adjacentCount < this.sidesDisplacement.length) {
 						id = data.get(x,y,z);
 						if (id !== 0) {
-							/*
+							
 							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz+0.25));
 							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz-0.25));
 							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz+0.25));
@@ -68,8 +68,8 @@ Chunk.prototype = {
 							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz-0.25));
 							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz+0.25));
 							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz-0.25));
-							*/
-							this.geometry.vertices.push(new THREE.Vector3(x+rx, y+ry, z+rz));
+							
+							//this.geometry.vertices.push(new THREE.Vector3(x+rx, y+ry, z+rz));
 							//this.set(x, y, z, id);
 							i++;
 						}
