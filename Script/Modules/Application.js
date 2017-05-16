@@ -24,6 +24,16 @@ const Application = (function() {
 
 			cube.rotation.y = Math.PI * 45 / 180;
 			scene.add(cube);
+		},
+		hideElements: function() {
+			menu.hide();
+			domElements.main.style.display = "none";
+			domElements.primary.style.display = "none";
+		},
+		showElements: function() {
+			menu.show();
+			domElements.main.style.display = "flex";
+			domElements.primary.style.display = "block";
 		}
 	}
 	function update() {
@@ -53,13 +63,13 @@ const Application = (function() {
 			world = new WorldHandler(controller, ThreejsHandler.scene);
 		} catch (e) {
 			if (e instanceof DOMException) {
-				console.log("Cross origin error, you can either disable security or run a local server.");
+				console.log("Cross origin error, you must first disable security or run on a local server.");
 			} else {
 				console.log(e);
 			}
 			if (ThreejsHandler.renderer && ThreejsHandler.renderer.domElement)
 				ThreejsHandler.renderer.domElement.style.display = "none";
-			showText("WebWorkers Error", "This browser doesn't support multithreading");
+			showText("WebWorkers Error", "WebWorker API is either not supported or disabled.");
 			return;
 		}
 
