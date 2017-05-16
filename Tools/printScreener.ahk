@@ -26,7 +26,7 @@ send, {Tab up}
 sleep, 120
 send, {Alt up}
 sleep, 300
-Loop, 153
+Loop, 220
 {
 	if (BreakLoop = 1)
 	{
@@ -36,23 +36,23 @@ Loop, 153
 	send, !{PrintScreen}
 	sleep, 100
 	send, {Alt down}
-	sleep, 120
+	sleep, 110
 	send, {Tab down}
-	sleep, 120
+	sleep, 110
 	send, {Tab up}
-	sleep, 120
+	sleep, 110
 	send, {Alt up}
 	sleep, 300
 	send, {LCtrl down}
-	sleep, 120
+	sleep, 110
 	send, {v down}
 	sleep, 100
 	send, {v up}
-	sleep, 120
+	sleep, 110
 	send, {LCtrl up}
-	sleep, 120
+	sleep, 110
 	send, {F12 down}
-	sleep, 50
+	sleep, 30
 	send, {F12 up}
 	sleep, 400
 	if (BreakLoop = 1)
@@ -62,7 +62,6 @@ Loop, 153
 	}
 	sendinput, i
 	sendinput, m
-	sleep, 10
 	sendinput, g
 	sleep, 10
 	sendinput, %A_Index%
@@ -79,15 +78,15 @@ Loop, 153
 	  MsgBox, WinWaitClose timed out
 	  Return
 	}
-	sleep, 120
+	sleep, 110
 	send, {Alt down}
-	sleep, 120
+	sleep, 110
 	send, {Tab down}
-	sleep, 120
+	sleep, 110
 	send, {Tab up}
-	sleep, 120
+	sleep, 110
 	send, {Alt up}
-	sleep, 300
+	sleep, 290
 	send, {z down}{z up}
 	sleep, 100
 	if (BreakLoop = 1)
