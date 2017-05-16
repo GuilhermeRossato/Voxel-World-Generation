@@ -2,7 +2,7 @@ var interp = [];
 
 const AnimationModule = (function() {
 
-	let animationSize = 156;
+	let animationSize = 360;
 	let player; // Class with .position {x, y, z} and .rotation {yaw, pitch}
 	let enabled = false;
 	let points = [];
@@ -17,11 +17,11 @@ const AnimationModule = (function() {
 	}
 
 	function getInterpolationFor(parameter) {
-		let n = [];
+		let n = SmoothInterpolation;
 		for (let i = 0 ; i < points.length; i++) {
-			n.push(i/(points.length-1), points[i][parameter]);
+			n.add(i/(points.length-1), points[i][parameter]);
 		}
-		return FastInterpolation.any(...n);
+		return n;
 	}
 
 	function update() {
@@ -55,7 +55,7 @@ const AnimationModule = (function() {
 			redirectBusy = app.controller.isEnabled;
 			app.controller.update = ()=>true;
 			app.controller.isEnabled = ()=>true;
-			setTimeout(()=>(app.main.style.display = "none"), 200);
+			setTimeout(()=>(app.hideElements()), 100);
 		}
 	}
 
@@ -76,15 +76,15 @@ const AnimationModule = (function() {
 
 	function onKeyDown(ev) {
 		if (ev.code === keys.add && player && state === "saving") {
-			if (points.length >= 4) {
+			//if (points.length >= 4) {
 				console.log("Cannot add points: Too many points already exists");
-			} else {
+			//} else {
 				let pointInfo = addPoint(player.position.x, player.position.y, player.position.z, player.rotation.yaw, player.rotation.pitch);
 				if (pointInfo instanceof Error)
 					console.log(pointInfo);
 				else
 					console.log(`Added point ${pointInfo.x}, ${pointInfo.y}, ${pointInfo.z} - Looking at ${pointInfo.yaw}, ${pointInfo.pitch}`);
-			}
+			//}
 		} else if (ev.code === keys.remove && player && state === "saving") {
 			if (points.length > 0) {
 				let pointInfo = points.pop();
@@ -188,8 +188,8 @@ const AnimationModule = (function() {
 		}
 	}
 }());
-/*
+
 setTimeout(()=>{
-	AnimationModule.init(player);
-}, 1000)
-*/
+	//app.hideElements();
+//	AnimationModule.init(player);
+}, 100)

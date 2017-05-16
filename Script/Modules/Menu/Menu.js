@@ -41,10 +41,17 @@ function Menu(config = {}) {
 	elements.wrapper.addEventListener("mouseup", onClick);
 	elements.wrapper.addEventListener("touchstart", onClick);
 	setState("closed");
+	this.elements = elements;
 }
 
 Menu.prototype = {
 	constructor: Menu,
+	hide: function() {
+		this.elements.wrapper.style.display = "none";
+	},
+	show: function() {
+		this.elements.wrapper.style.display = "flex";
+	},
 	createElementWithStyle: function(type, style) {
 		let element = document.createElement(type);
 		element.setAttribute("style", style.replace(/(\r\n\t|\n|\r|\t)/gm,""));
