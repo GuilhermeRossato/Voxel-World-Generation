@@ -47,32 +47,21 @@ Chunk.prototype = {
 			rx = cx*chunkSize,
 			ry = cy*chunkSize,
 			rz = cz*chunkSize,
-			id, adjacentCount, marker;
+			id, marker;
 		for (let x = 0 ; x < chunkSize; x ++) {
 			for (let y = 0 ; y < chunkSize; y ++) {
 				for (let z = 0 ; z < chunkSize; z ++) {
-					adjacentCount = 0;
-					this.sidesDisplacement.forEach(vec => {
-						if (data.get(x+vec[0], y+vec[1], z+vec[2]) === 1)
-							adjacentCount++;
-					});
-					if (adjacentCount > 0 && adjacentCount < this.sidesDisplacement.length) {
-						id = data.get(x,y,z);
-						if (id !== 0) {
-							
-							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz+0.25));
-							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz-0.25));
-							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz+0.25));
-							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz-0.25));
-							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz+0.25));
-							this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz-0.25));
-							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz+0.25));
-							this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz-0.25));
-							
-							//this.geometry.vertices.push(new THREE.Vector3(x+rx, y+ry, z+rz));
-							//this.set(x, y, z, id);
-							i++;
-						}
+					id = data.get(x,y,z);
+					if (id !== 0) {
+						this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz+0.25));
+						this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz-0.25));
+						this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz+0.25));
+						this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz-0.25));
+						this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz+0.25));
+						this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz-0.25));
+						this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz+0.25));
+						this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz-0.25));
+						i++;
 					}
 				}
 				if (i === count)
