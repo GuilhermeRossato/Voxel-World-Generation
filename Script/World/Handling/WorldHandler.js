@@ -29,7 +29,7 @@ WorldHandler.prototype = {
 		this.workers.forEach(worker => worker.terminate());
 		this.workers.length = 0;
 		for (let i = 0; i < quantity; i++) {
-			let worker = new Worker("Script/World/Generation/WorldWorker1.js");
+			let worker = new Worker("Script/World/Generation/WorldWorker2.js");
 			new WorkerWrapper(this, worker, this.a);
 		}
 	},
