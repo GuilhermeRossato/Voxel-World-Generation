@@ -191,6 +191,7 @@ function ExplorerControl(scene, camera) {
 		pitchObject = yawObject.children[0];
 		position = yawObject.position;
 		scene.add(yawObject);
+		yawObject.position.set(0,35,0);
 		loadPosition();
 		direction = new THREE.Vector3(0,0,0);
 		document.addEventListener('pointerlockchange', pointerLockChange);
