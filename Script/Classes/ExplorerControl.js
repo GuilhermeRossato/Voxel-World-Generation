@@ -94,16 +94,20 @@ function ExplorerControl(scene, camera) {
 	}
 
 	function onKeyDown(ev) {
-		if (keys[ev.code] === false && ev.code !== "ShiftRight")
+		if (keys[ev.code] === false && ev.code !== "ShiftRight") {
 			keys[ev.code] = true;
+		} else if (ev.code == "F5") {
+			savePosition();
+		}
 	}
 	function onKeyUp(ev) {
 		if (ev.code === "ShiftRight") {
 			keys[ev.code] = !keys[ev.code];
 		} else if (ev.code === "KeyR" && worldSize < 20) {
 			app.setupWorld();
-		} else if (keys[ev.code] === true)
+		} else if (keys[ev.code] === true) {
 			keys[ev.code] = false;
+		}
 	}
 
 	/*
