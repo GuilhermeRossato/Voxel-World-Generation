@@ -91,7 +91,7 @@ const Application = (function() {
 			timeStamp: 16
 		});
 
-		showText("Paused", "Click anywhere to start<br><br>[W,A,S,D] to move around<br>[Space/Shift] to move up and down<br>[Right Shift] Hold to move faster");
+		showText("Paused", "Click anywhere to start<br><br>[W,A,S,D] to move around<br>[Space/Shift] to move up and down<br>[Right Shift] Toggle movement speed");
 		domElements.main.style.cursor = "pointer";
 	}
 	function onResize() {
