@@ -10,6 +10,8 @@ function WorldHandler(player, scene) {
 	this.startWorkers.call(this);
 	this.chunkAdder = new ChunkAdder(this);
 	this.chunkRemover = new ChunkRemover(this);
+
+	this.chunkCount = 0;
 }
 
 WorldHandler.prototype = {
@@ -83,6 +85,7 @@ WorldHandler.prototype = {
 		chunk.finalize(this.scene);
 		this.chunkRemover.onChunkAdded(chunk);
 		this.chunks[cx][cz][cy] = chunk;
+		this.chunkCount ++;
 	},
 	// Only ChunkAdder calls this function
 	onNewChunkRequest: function(cx, cy, cz) {
@@ -94,6 +97,7 @@ WorldHandler.prototype = {
 	// Only ChunkRemover calls this function
 	onRemoveChunkRequest: function(x, y, z) {
 		this.chunks[x][z][y] = undefined;
+		this.chunkCount--;
 	},
 	update: function(player) {
 		if (!this.hasElapsed())

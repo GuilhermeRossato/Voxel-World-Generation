@@ -10,6 +10,7 @@ let WorldGen, scene, player;
 
 const Application = (function() {
 	let domElements, world, controller, particleSystem, menu;
+	let menuData = {};
 	return {
 		init: function() {
 			initialize.call(this);
@@ -39,6 +40,7 @@ const Application = (function() {
 	function update() {
 		world.update();
 		controller.update();
+		menu.update();
 	}
 	function draw() {
 		ThreejsHandler.render();
@@ -48,7 +50,7 @@ const Application = (function() {
 		["main", "primary", "secondary"].forEach(elementName => domElements[elementName] = document.getElementById(elementName));
 		domElements.secondary.style.display = "none";
 		if (!ThreejsHandler.init())
-			return showText("WebGL Error", "This browser doesn't support WebGL");
+			return showText("WebGL Error", "This app couldn't initialize WebGL");
 		scene = ThreejsHandler.scene;
 
 		controller = new ExplorerControl(ThreejsHandler.scene, ThreejsHandler.camera);
@@ -56,7 +58,8 @@ const Application = (function() {
 		controller.addCallback("release", () => (domElements.main.style.display = "flex"));
 		player = controller;
 
-		menu = new Menu({wrapper: document.body});
+
+		menu = new Menu({wrapper: document.body, data:menuData});
 
 		particleSystem = new ParticleSystem(ThreejsHandler.scene, 0.5);
 		try {
@@ -73,6 +76,10 @@ const Application = (function() {
 			return;
 		}
 
+		menuData.position = controller.position;
+		menuData.rotation = controller.rotation;
+		menuData.world = world;
+		
 		function onMessageClick() {
 			if (!controller.isEnabled()) {
 				controller.lock();
