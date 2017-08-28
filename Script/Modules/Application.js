@@ -79,7 +79,7 @@ const Application = (function() {
 		menuData.position = controller.position;
 		menuData.rotation = controller.rotation;
 		menuData.world = world;
-		
+
 		function onMessageClick() {
 			if (!controller.isEnabled()) {
 				controller.lock();

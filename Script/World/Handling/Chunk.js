@@ -13,18 +13,20 @@ function createChunkTexture() {
 	}
 }
 
-function createChunkMesh(geometry) {
-	let material = new THREE.PointsMaterial({
-		map: createChunkTexture(),
-		size:0.75,
-		color: new THREE.Color(0x646464)
+function createChunkMesh(geometries) {
+	let materials = [0x646464, 0x406827, 0x7A563D].map((colorCode) => {
+		return new THREE.PointsMaterial({
+			map: createChunkTexture(),
+			size:0.75,
+			color: new THREE.Color(colorCode)
+		});
 	});
-	let mesh = new THREE.Points(geometry, material);
-	return mesh;
+	let meshes = materials.map((material, i) => new THREE.Points(geometries[i], material));
+	return meshes;
 }
 
 function Chunk(x, y, z) {
-	this.geometry = new THREE.Geometry();
+	this.geometries = [new THREE.Geometry(), new THREE.Geometry(), new THREE.Geometry()];
 	this.squaredDistanceFrom = function(px, py, pz) {
 		return (px-x)*(px-x)+(py-y)*(py-y)+(pz-z)*(pz-z);
 	}
@@ -47,20 +49,21 @@ Chunk.prototype = {
 			rx = cx*chunkSize,
 			ry = cy*chunkSize,
 			rz = cz*chunkSize,
-			id, marker;
+			id, marker, geo;
 		for (let x = 0 ; x < chunkSize; x ++) {
 			for (let y = 0 ; y < chunkSize; y ++) {
 				for (let z = 0 ; z < chunkSize; z ++) {
 					id = data.get(x,y,z);
-					if (id !== 0) {
-						this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz+0.25));
-						this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz-0.25));
-						this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz+0.25));
-						this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz-0.25));
-						this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz+0.25));
-						this.geometry.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz-0.25));
-						this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz+0.25));
-						this.geometry.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz-0.25));
+					if (id !== 0 && this.geometries[id-1]) {
+						geo = this.geometries[id-1];
+						geo.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz+0.25));
+						geo.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry+0.25, z+rz-0.25));
+						geo.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz+0.25));
+						geo.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry+0.25, z+rz-0.25));
+						geo.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz+0.25));
+						geo.vertices.push(new THREE.Vector3(x+rx+0.25, y+ry-0.25, z+rz-0.25));
+						geo.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz+0.25));
+						geo.vertices.push(new THREE.Vector3(x+rx-0.25, y+ry-0.25, z+rz-0.25));
 						i++;
 					}
 				}
@@ -74,16 +77,24 @@ Chunk.prototype = {
 //		this.geometry.vertices.push(new THREE.Vector3(x, y, z));
 //	},
 	destroy: function() {
-		this.mesh.parent.remove(this.mesh);
-		this.geometry.vertices = undefined;
-		this.geometry = undefined;
-		this.mesh = undefined;
-		this.squaredDistanceFrom = undefined;
+		var i;
+		for (i=0;i<this.meshes.length;i++) {
+			this.meshes[i].parent.remove(this.meshes[i]);
+			this.meshes[i].material.dispose();
+			this.meshes[i].geometry.dispose();
+		}
+		for (i=0;i<this.geometries.length;i++) {
+			this.geometries[i].vertices = null;
+			this.geometries[i] = null;
+		}
+		this.meshes = null;
+		this.geometries = null;
+		this.squaredDistanceFrom = null;
 		return this.getXYZ();
 	},
 	finalize: function(scene) {
-		this.mesh = createChunkMesh(this.geometry);
-		scene.add(this.mesh);
+		this.meshes = createChunkMesh(this.geometries);
+		this.meshes.forEach(mesh => scene.add(mesh));
 		this.finalize = undefined;
 	}
 }
