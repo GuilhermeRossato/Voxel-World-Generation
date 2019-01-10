@@ -1,8 +1,8 @@
-# VoxelWorldGeneration
+# Voxel World Generation
 
-Testing different world generation methods using voxels in the web. Implemented with HTML5, Javascript and three.js
+An experiment with voxel world generation in the web implemented with `HTML5`/`CSS` technologies, `javascript` and `three.js`.
 
-[Click here to run the current version](https://rawgit.com/GuilhermeRossato/VoxelWorldGeneration/master/index.html)
+[Click here to run the current version](http://guilherme-rossato.com/Voxel-World-Generation/)
 
 # Releases
  - v 0.1 [Single Threaded, Simplex Noise, Static World Creation]
@@ -10,12 +10,12 @@ Testing different world generation methods using voxels in the web. Implemented 
  - v 0.2 [Single Threaded, Improved Noise, Dynamic World Generation]
 ![Preview v0.2](https://github.com/GuilhermeRossato/VoxelWorldGeneration/blob/master/Images/preview_v02.gif?raw=true)
  - v 0.3 [Multi Threaded, Improved Noise, Dynamic World Generation]
-![Preview v0.3](https://github.com/GuilhermeRossato/VoxelWorldGeneration/blob/master/Images/preview_v03.gif?raw=true)
-
+![Preview v0.3](https://github.com/GuilhermeRossato/VoxelWorldGeneration/blob/master/Images/preview_v025.png?raw=true)
 
 # How to run / build locally
 
- - Windows: (Requires Google Chrome) Download this repo, unpack it and run `.\Tools\runChrome.bat`. This solves cross-conflicts (allows multithreading/webWorkers/textures)
+ - Windows: (Requires Google Chrome) Download this repo, unpack it and run `.\Tools\runChrome.bat`. This solves cross-conflicts (allows multithreading/webWorkers/textures) - Alternatively, use a simple static local http server (like in php, python or node's http-serve)
+
  - Linux or Mac or Windows: Download this repo, unpack it and put it in a local server, then open `index.html` in any decent web browser.
 
 # Dependencies, Credits and Inspiration
