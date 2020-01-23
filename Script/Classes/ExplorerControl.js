@@ -150,7 +150,7 @@ function ExplorerControl(scene, camera) {
 	this.update = function() {
 		if (yawObject && pitchObject) {
 			this.updateDirectionVector();
-			let multiplier = (keys["ShiftRight"]?8:2);
+			let multiplier = (keys["ShiftRight"]?5:2);
 			if (direction.x != 0)
 				position.x += direction.x * 0.085*multiplier;
 			if (direction.y != 0)

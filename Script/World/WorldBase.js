@@ -10,7 +10,7 @@ const blockTypes = {
 }
 
 const chunkSize = 20;
-const maxLoadedChunks = 180;
+var maxLoadedChunks = typeof window !== "undefined" && window.localStorage && window.localStorage.getItem("last-world-max-loaded-chunk") && !isNaN(parseInt(window.localStorage.getItem("last-world-max-loaded-chunk"))) ? parseInt(window.localStorage.getItem("last-world-max-loaded-chunk")) : 60;
 
 function encodeWorldMessage(world) {
 	return ("c"+world.getCount()+","+world.encode());

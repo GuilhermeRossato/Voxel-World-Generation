@@ -9,6 +9,9 @@ ChunkAdder.prototype = {
 		let rx, ry, rz;
 		for (let i = 0; i < this.chunkOffsets.length; i++) {
 			for (let j = 0; j < this.chunkOffsets.length; j++) {
+				if (j > 0 && maxLoadedChunks < 90) {
+					break;
+				}
 				rx = cx + this.chunkOffsets[i][0] + this.chunkOffsets[j][0];
 				ry = cy + this.chunkOffsets[i][1] + this.chunkOffsets[j][1];
 				rz = cz + this.chunkOffsets[i][2] + this.chunkOffsets[j][2];

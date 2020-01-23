@@ -8,7 +8,7 @@ function Menu(config={}) {
 		(config.data === undefined) && (config.data = {});
 	}());
 	let state, elements, isMobile;
-	elements = {};
+	this.elements = elements = {};
 	this.setupElements(config.wrapper, elements);
 	this.data = config.data;
 	menuElements = elements;
@@ -16,15 +16,15 @@ function Menu(config={}) {
 	isMobile = ((window.mobileAndTabletcheck instanceof Function) && window.mobileAndTabletcheck());
 	function setState(nState) {
 		if (nState === "closed") {
-			elements.wrapper.style.width = "15vmax";
+			elements.wrapper.style.width = "16vmax";
 			elements.wrapper.style.height = "5vmax";
 			elements.inner.style.maxHeight = "5vmax";
 			elements.inner.style.fontSize = "0.75cm";
 			elements.innerElements.style.opacity = "0";
 			elements.innerElements.style.height = "0px";
-			elements.innerTitle.innerText = "Info";
+			elements.innerTitle.innerText = "Info / Actions";
 		} else if (nState === "open") {
-			var contentSize = 30*5;
+			var contentSize = 30*8;
 			elements.wrapper.style.width = (100+contentSize)+"px";
 			elements.wrapper.style.height = (60+contentSize)+"px";
 			elements.inner.style.maxHeight = "";
@@ -32,23 +32,33 @@ function Menu(config={}) {
 			elements.innerElements.style.opacity = "1";
 			elements.innerElements.style.height = contentSize+"px";
 			elements.innerTitle.innerText = "Click to Close";
+			this.updateSwitchButtonText();
 		}
 		state = nState;
 	}
 	let lastEventTimestamp;
 	function onClick(event) {
-		if (-lastEventTimestamp + (lastEventTimestamp = event.timeStamp) < 10) {
+		if (-lastEventTimestamp + (lastEventTimestamp = event.timeStamp) < 20) {
 			return;
 		} else {
-			if (event instanceof MouseEvent && event.button !== 0)
-				return
+			if (event instanceof MouseEvent && event.button !== 0) {
+				return;
+			}
 			event.preventDefault();
-			setState(((state === "closed") ? "open" : "closed"))
+			if (elements.button) {
+				const rect = elements.button.getBoundingClientRect();
+				if (event.screenX > rect.left && event.screenX < rect.right) {
+					if (event.clientY > rect.top && event.clientY < rect.bottom) {
+						return this.onSwitchWorldClick(event);
+					}
+				}
+			}
+			setState.call(this, ((state === "closed") ? "open" : "closed"))
 		}
 	}
-	elements.wrapper.addEventListener("mouseup", onClick);
-	elements.wrapper.addEventListener("touchstart", onClick);
-	setState("closed");
+	elements.wrapper.addEventListener("mouseup", onClick.bind(this));
+	elements.wrapper.addEventListener("touchstart", onClick.bind(this));
+	setState.call(this, "closed");
 	this.elements = elements;
 	this.getState = function() {
 		return state;
@@ -93,6 +103,24 @@ Menu.prototype = {
 		element.setAttribute("style", style.replace(/(\r\n\t|\n|\r|\t)/gm, ""));
 		return element;
 	},
+	updateSwitchButtonText: function() {
+		if (!this.elements) {
+			return console.warn("missing elements!");
+		}
+		if (typeof window.maxLoadedChunks === "undefined") {
+			return console.log("Not ready yet");
+		}
+		if (maxLoadedChunks < 90) {
+			this.elements.button.innerText = "Activate Larger World";
+		} else {
+			this.elements.button.innerText = "Deactivate Larger World";
+		}
+	},
+	onSwitchWorldClick: function(event) {
+		maxLoadedChunks = maxLoadedChunks < 90 ? 180 : 60;
+		window.localStorage.setItem("last-world-max-loaded-chunk", maxLoadedChunks.toString());
+		this.updateSwitchButtonText();
+	},
 	setupElements: function(wrapper, elements) {
 		/* WRAPPER STYLE */
 		let style = `
@@ -124,7 +152,7 @@ Menu.prototype = {
 		`;
 		elements.inner = this.createElementWithStyle("div", style);
 		elements.innerTitle = this.createElementWithStyle("span", "");
-		elements.innerTitle.innerText = "Info";
+		elements.innerTitle.innerText = "Info / Actions";
 
 		/* ELEMENTS STYLE */
 		style = `
@@ -152,11 +180,19 @@ Menu.prototype = {
 			elements[type.toLowerCase()] = line;
 		}
 		);
+		elements.button = this.createElementWithStyle("button", `
+			order: 10;
+			padding: 7px;
+			width: 100%;
+			margin: 0 7px;
+			z-index: 12;
+		`);
 		/* Final Appends */
 		elements.innerElements.appendChild(elements.position);
 		elements.inner.appendChild(elements.innerTitle);
 		elements.inner.appendChild(elements.innerElements);
 		elements.wrapper.appendChild(elements.inner);
 		wrapper.appendChild(elements.wrapper);
+		elements.innerElements.appendChild(elements.button);
 	}
 }
