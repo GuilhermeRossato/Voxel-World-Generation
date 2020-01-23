@@ -1,4 +1,4 @@
-var blockTypes = {
+const blockTypes = {
 	undefined: 0,
 	air: 1,
 	dirt: 2,
@@ -10,7 +10,7 @@ var blockTypes = {
 }
 
 const chunkSize = 20;
-const maxLoadedChunks = 60;
+const maxLoadedChunks = 180;
 
 function encodeWorldMessage(world) {
 	return ("c"+world.getCount()+","+world.encode());

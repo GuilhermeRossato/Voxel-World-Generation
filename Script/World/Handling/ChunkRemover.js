@@ -1,4 +1,4 @@
-const CR_MaxDeletionsPerSecond = 12;
+const CR_MaxDeletionsPerSecond = 40;
 
 function ChunkRemover(parent) {
 	this.parent = parent;
@@ -32,7 +32,7 @@ ChunkRemover.prototype = {
 	update: function(x, y, z) {
 		if ((this.lastIndex === 0) || (this.lastIndex < maxLoadedChunks))
 			return;
-		for (let r = 0 ; r < 10; r++) {
+		for (let r = 0 ; r < 30; r++) {
 			if (this.index === this.lastIndex) {
 				this.finishProcessing();
 				this.index = 0;
