@@ -2,7 +2,7 @@
 
 An experiment with voxel world generation in the web implemented with `HTML5`/`CSS` technologies, `javascript` and `three.js`.
 
-[Click here to run the current version](http://grossato.com/Voxel-World-Generation/)
+[Click here to run the current version](https://grossato.com.br/static/Voxel-World-Generation/)
 
 # Releases
  - v 0.1 [Single Threaded, Simplex Noise, Static World Creation]
